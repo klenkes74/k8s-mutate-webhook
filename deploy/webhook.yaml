@@ -14,7 +14,8 @@ items:
   spec:
     publishNotReadyAddresses: true
     ports:
-    - port: 443
+    - name: tcp-433
+      port: 443
       targetPort: 8443
     selector:
       app: podevictionaid
@@ -27,6 +28,9 @@ items:
       app: podevictionaid
   spec:
     replicas: 1
+    revisionHistoryLimit: 3
+    progressDeadlineSeconds: 30
+
     selector:
       matchLabels:
         app: podevictionaid
@@ -39,7 +43,7 @@ items:
         containers:
         - name: podevictionaid
           image: quay.io/klenkes74/podevictionaid:1.0.0
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: 500m
