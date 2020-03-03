@@ -1,4 +1,4 @@
-NAME = podevictionhelper
+NAME = mutateme
 IMAGE_PREFIX = klenkes
 IMAGE_NAME = $$(basename `pwd`)
 IMAGE_VERSION = $$(git log --abbrev-commit --format=%h -s | head -n 1)

@@ -7,15 +7,17 @@ RUN apk add git make openssl
 
 WORKDIR /go/src/github.com/klenkes74/k8s-mutate-webhook
 ADD . .
-RUN make test
-RUN make app
+RUN make test app
+RUN ls -ral /go/src/github.com/klenkes74/k8s-mutate-webhook
+
 
 FROM alpine
 RUN apk --no-cache add ca-certificates && mkdir -p /app
 WORKDIR /app
 
-USER 1001
-
 COPY --from=build /go/src/github.com/klenkes74/k8s-mutate-webhook/mutateme .
 COPY --from=build /go/src/github.com/klenkes74/k8s-mutate-webhook/ssl ssl
+
+USER 1001
+
 CMD ["/app/mutateme"]
