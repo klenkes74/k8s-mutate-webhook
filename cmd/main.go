@@ -56,5 +56,5 @@ func main() {
 		MaxHeaderBytes: 1 << 20, // 1048576
 	}
 
-	log.Fatal(s.ListenAndServe())
+	log.Fatal(s.ListenAndServeTLS("/etc/ssl/private/tls.crt", "/etc/ssl/private/tls.key"))
 }
