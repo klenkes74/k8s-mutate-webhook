@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	m "github.com/alex-leonhardt/k8s-mutate-webhook/pkg/mutate"
+	m "github.com/klenkes74/k8s-mutate-webhook/pkg/mutate"
 )
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
