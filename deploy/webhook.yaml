@@ -30,7 +30,6 @@ items:
     replicas: 1
     revisionHistoryLimit: 3
     progressDeadlineSeconds: 30
-
     selector:
       matchLabels:
         app: podevictionaid
@@ -62,7 +61,6 @@ items:
 - kind: MutatingWebhookConfiguration
   apiVersion: admissionregistration.k8s.io/v1beta1
   metadata:
-    namespace: default
     name: podevictionaid
     labels:
       app: podevictionaid
@@ -78,6 +76,3 @@ items:
           apiGroups: [""]
           apiVersions: ["v1"]
           resources: ["pods"]
-      namespaceSelector:
-        matchLabels:
-          podevictionaid: enabled
