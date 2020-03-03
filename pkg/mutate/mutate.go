@@ -44,20 +44,20 @@ func Mutate(body []byte) ([]byte, error) {
 
 		// add some audit annotations, helpful to know why a object was modified, maybe (?)
 		resp.AuditAnnotations = map[string]string{
-			"mutateme": "yup it did it",
+			"add-eviction-helper": "added annotation for evictionability of the pod",
 		}
 
 		// the actual mutation is done by a string in JSONPatch style, i.e. we don't _actually_ modify the object, but
 		// tell K8S how it should modifiy it
 		p := []map[string]string{}
-		for i := range pod.Spec.Containers {
-			patch := map[string]string{
-				"op":    "replace",
-				"path":  fmt.Sprintf("/spec/containers/%d/image", i),
-				"value": "debian",
-			}
-			p = append(p, patch)
+
+		patch := map[string]string{
+			"op":    "create",
+			"path":  "metadata.annotations.'cluster-autoscaler.kubernetes.io/safe-to-evict'",
+			"value": "true",
 		}
+		p = append(p, patch)
+
 		// parse the []map into JSON
 		resp.Patch, err = json.Marshal(p)
 

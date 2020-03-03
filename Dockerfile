@@ -5,7 +5,7 @@ ENV GOOS linux
 
 RUN apk add git make openssl
 
-WORKDIR /go/src/github.com/alex-leonhardt/k8s-mutate-webhook
+WORKDIR /go/src/github.com/klenkes74/k8s-mutate-webhook
 ADD . .
 RUN make test
 RUN make app
@@ -13,6 +13,9 @@ RUN make app
 FROM alpine
 RUN apk --no-cache add ca-certificates && mkdir -p /app
 WORKDIR /app
-COPY --from=build /go/src/github.com/alex-leonhardt/k8s-mutate-webhook/mutateme .
-COPY --from=build /go/src/github.com/alex-leonhardt/k8s-mutate-webhook/ssl ssl
+
+USER 1001
+
+COPY --from=build /go/src/github.com/klenkes74/k8s-mutate-webhook/mutateme .
+COPY --from=build /go/src/github.com/klenkes74/k8s-mutate-webhook/ssl ssl
 CMD ["/app/mutateme"]
