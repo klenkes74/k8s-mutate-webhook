@@ -135,7 +135,7 @@ func TestMutateJSON(t *testing.T) {
 	assert.NoError(t, err, "failed to unmarshal with error %s", err)
 
 	rr := r.Response
-	assert.Equal(t, `[{"op":"replace","path":"/spec/containers/0/image","value":"debian"}]`, string(rr.Patch))
-	assert.Contains(t, rr.AuditAnnotations, "mutateme")
+	assert.Equal(t, `[{"op":"create","path":"/metadata/annotations/'cluster-autoscaler.kubernetes.io/safe-to-evict'","value":"true"}]`, string(rr.Patch))
+	assert.Contains(t, rr.AuditAnnotations, "add-eviction-helper")
 
 }
