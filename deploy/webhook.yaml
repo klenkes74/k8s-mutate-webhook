@@ -1,5 +1,5 @@
 ---
-kind: List
+kind: Liast
 apiVersion: v1
 items:
 - kind: Service
@@ -14,9 +14,10 @@ items:
   spec:
     publishNotReadyAddresses: true
     ports:
-    - name: tcp-433
+    - name: https
       port: 443
       targetPort: 8443
+      protocol: TCP
     selector:
       app: podevictionaid
 - kind: Deployment
@@ -45,14 +46,18 @@ items:
           imagePullPolicy: Always
           resources:
             limits:
-              cpu: 500m
-              memory: 128Mi
-            requests:
-              cpu: 250m
+              cpu: 150m
               memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 32Mi
           volumeMounts:
           - mountPath: "/etc/ssl/private"
             name: ssl-certs
+          ports:
+          - name: https
+            containerPort: 8443
+            protocol: TCP
         volumes:
         - name: ssl-certs
           secret:
