@@ -135,7 +135,7 @@ func TestMutateJSON(t *testing.T) {
 	assert.NoError(t, err, "failed to unmarshal with error %s", err)
 
 	rr := r.Response
-	assert.Equal(t, `[{"op":"add","path":"/metadata/annotations/\"cluster-autoscaler.kubernetes.io/safe-to-evict\"","value":"\"true\""}]`, string(rr.Patch))
+	assert.Equal(t, `[{"op":"add","path":"/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict","value":"\"true\""}]`, string(rr.Patch))
 	assert.Contains(t, rr.AuditAnnotations, "add-eviction-helper")
 
 }
