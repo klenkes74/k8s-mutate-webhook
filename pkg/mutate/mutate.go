@@ -53,7 +53,7 @@ func Mutate(body []byte) ([]byte, error) {
 
 		patch := map[string]string{
 			"op":    "add",
-			"path":  "/metadata/annotations/\"cluster-autoscaler.kubernetes.io/safe-to-evict\"",
+			"path":  "/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict",
 			"value": "\"true\"",
 		}
 		p = append(p, patch)
