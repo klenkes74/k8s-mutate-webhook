@@ -42,6 +42,20 @@ func handleMutate(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+		// Create a CA certificate pool and add cert.pem to it
+	caCert, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	// Create the TLS Config with the CA pool and enable Client certificate validation
+	tlsConfig := &tls.Config{
+		ClientCAs: caCertPool,
+		ClientAuth: tls.RequireAndVerifyClientCert,
+	}
+	tlsConfig.BuildNameToCertificate()
 
 	mux := http.NewServeMux()
 
@@ -54,6 +68,7 @@ func main() {
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20, // 1048576
+		TLSConfig: tlsConfig,
 	}
 
 	log.Fatal(s.ListenAndServeTLS("/etc/ssl/private/tls.crt", "/etc/ssl/private/tls.key"))
