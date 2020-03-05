@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"html"
 	"io/ioutil"
+	"crypto/tls"
+	"crypto/x509"
 	"log"
 	"net/http"
 	"time"
@@ -52,8 +54,7 @@ func main() {
 
 	// Create the TLS Config with the CA pool and enable Client certificate validation
 	tlsConfig := &tls.Config{
-		ClientCAs: caCertPool,
-		ClientAuth: tls.RequireAndVerifyClientCert,
+		RootCAs: caCertPool,
 	}
 	tlsConfig.BuildNameToCertificate()
 
