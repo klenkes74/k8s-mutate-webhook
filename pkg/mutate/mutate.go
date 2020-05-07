@@ -51,7 +51,16 @@ func Mutate(body []byte) ([]byte, error) {
 		// tell K8S how it should modifiy it
 		p := []map[string]string{}
 
-		patch := map[string]string{
+		if pod.ObjectMeta.GetAnnotations() == nil || len(pod.ObjectMeta.GetAnnotations()) == 0 {
+			ann := map[string]string{
+				"op": "add",
+				"path": "/metadata~1annotations",
+				"value": "{}",
+			}
+			p = append(p, ann)
+		}
+
+			patch := map[string]string{
 			"op":    "add",
 			"path":  "/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict",
 			"value": "\"true\"",

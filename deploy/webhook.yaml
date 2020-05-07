@@ -1,5 +1,5 @@
 ---
-kind: Liast
+kind: List
 apiVersion: v1
 items:
 - kind: Service
@@ -42,7 +42,7 @@ items:
       spec:
         containers:
         - name: podevictionaid
-          image: quay.io/klenkes74/podevictionaid:1.0.0
+          image: quay.io/klenkes74/podevictionaid:1.0.1
           imagePullPolicy: Always
           resources:
             limits:
