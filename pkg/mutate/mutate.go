@@ -52,20 +52,20 @@ func Mutate(body []byte) ([]byte, error) {
 		p := []map[string]string{}
 
 		if pod.ObjectMeta.GetAnnotations() == nil || len(pod.ObjectMeta.GetAnnotations()) == 0 {
-			ann := map[string]string{
+			patch := map[string]string{
 				"op":    "add",
 				"path":  "/metadata/annotations",
-				"value": "{}",
+				"value": "{ \"cluster-autoscaler.kuberentes.io~1/save-to-evict\":  \"true\" }",
 			}
-			p = append(p, ann)
+			p = append(p, patch)
+		} else {
+			patch := map[string]string{
+				"op":    "add",
+				"path":  "/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict",
+				"value": "\"true\"",
+			}
+			p = append(p, patch)
 		}
-
-		patch := map[string]string{
-			"op":    "add",
-			"path":  "/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict",
-			"value": "\"true\"",
-		}
-		p = append(p, patch)
 
 		// parse the []map into JSON
 		resp.Patch, err = json.Marshal(p)
