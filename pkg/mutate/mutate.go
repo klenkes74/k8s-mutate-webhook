@@ -42,33 +42,24 @@ func Mutate(body []byte) ([]byte, error) {
 		pT := v1beta1.PatchTypeJSONPatch
 		resp.PatchType = &pT // it's annoying that this needs to be a pointer as you cannot give a pointer to a constant?
 
-		// add some audit annotations, helpful to know why a object was modified, maybe (?)
-		resp.AuditAnnotations = map[string]string{
-			"add-eviction-helper": "added annotation for evictionability of the pod",
-		}
-
-		// the actual mutation is done by a string in JSONPatch style, i.e. we don't _actually_ modify the object, but
-		// tell K8S how it should modifiy it
-		p := []map[string]string{}
+		var auditmessage string
+		var patch []byte
 
 		if pod.ObjectMeta.GetAnnotations() == nil || len(pod.ObjectMeta.GetAnnotations()) == 0 {
-			patch := map[string]string{
-				"op":    "add",
-				"path":  "/metadata/annotations",
-				"value": "{ \"cluster-autoscaler.kuberentes.io~1/save-to-evict\":  \"true\" }",
-			}
-			p = append(p, patch)
+			patch = []byte(`[{"op":"add","path":"/metadata/annotations","value":{"cluster-autoscaler.kubernetes.io/safe-to-evict":"true"}}]`)
+
+			auditmessage = "Created first annotation: cluster-autoscaler.kubernetes.io/save-to-evict"
 		} else {
-			patch := map[string]string{
-				"op":    "add",
-				"path":  "/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict",
-				"value": "\"true\"",
-			}
-			p = append(p, patch)
+			patch = []byte(`[{"op":"add","path":"/metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict","value":"true"}]`)
+
+			auditmessage = "Added annotation 'cluster-autoscaler.kubernetes.io/save-to-evict' to the annotations"
 		}
 
-		// parse the []map into JSON
-		resp.Patch, err = json.Marshal(p)
+		resp.AuditAnnotations = map[string]string{
+			"add-eviction-helper": auditmessage,
+		}
+
+		resp.Patch = []byte(patch)
 
 		// Success, of course ;)
 		resp.Result = &metav1.Status{
